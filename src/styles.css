@@ -1,0 +1,168 @@
+:root {
+  --ink: #3b3129;
+  --hand: 'Caveat', 'ZCOOL KuaiLe', 'Comic Sans MS', cursive;
+  --hand-zh: 'ZCOOL KuaiLe', 'Caveat', 'PingFang SC', sans-serif;
+  --ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', 'PingFang SC', sans-serif;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { margin: 0; min-height: 100%; }
+
+body {
+  background: #e2c59b;
+  color: var(--ink);
+  font-family: var(--ui);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+.app {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------- Desk ---------- */
+.wood { position: fixed; inset: 0; z-index: 0; }
+.wood svg { display: block; }
+
+/* Scene box: always the full window (the layout stretches to match).
+   No z-index/transform here, so the light layers' blend modes reach the desk. */
+.scene {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.placed { position: absolute; z-index: 1; pointer-events: none; }
+
+/* ---------- Window light ---------- */
+.sun { position: absolute; inset: 0; pointer-events: none; }
+.sun-layer {
+  position: absolute;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+  z-index: 3;
+  pointer-events: none;
+}
+.sun-layer.shade { filter: blur(7px); mix-blend-mode: multiply; opacity: 0.3; }
+.sun-layer.soft { filter: blur(5px); mix-blend-mode: soft-light; opacity: 0.8; }
+.sun-layer.glow { filter: blur(16px); mix-blend-mode: screen; opacity: 0.3; }
+
+/* ---------- Items ---------- */
+.item { position: relative; display: block; outline: none; border-radius: 16px; }
+.item svg { display: block; width: 100%; height: auto; overflow: visible; }
+.item svg.layer-top { position: absolute; left: 0; top: 0; will-change: transform; }
+.hit { cursor: pointer; touch-action: none; }
+/* Item boxes overlap on the desk: only the drawn stationery (.hit) and the
+   invisible hotspot buttons take pointer events, everything else passes through. */
+.item { pointer-events: none; }
+.item .hit, .hotspot { pointer-events: auto; }
+
+.hotspot {
+  position: absolute;
+  z-index: 2;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 10px;
+  outline: none;
+}
+.tablist { position: absolute; inset: 0; pointer-events: none; }
+.tablist .hotspot { pointer-events: auto; }
+
+/* Focus ring only after keyboard navigation (html.kbd is set on Tab). */
+svg [tabindex]:focus { outline: none; }
+.kbd svg [tabindex]:focus-visible,
+.kbd .item:focus-visible,
+.kbd .hotspot:focus-visible {
+  outline: 2px dashed rgba(70, 45, 22, 0.6);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Masking-tape labels ---------- */
+.washi {
+  position: absolute;
+  z-index: 2;
+  transform: rotate(var(--r));
+  transform-origin: 0 0;
+  filter: drop-shadow(1px 2px 1.5px rgba(74, 44, 16, 0.25));
+  pointer-events: none;
+}
+.washi-strip {
+  padding: 2px 14px 3px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 2px, rgba(0, 0, 0, 0.015) 2px 5px),
+    linear-gradient(180deg, rgba(244, 233, 201, 0.95), rgba(233, 219, 181, 0.95));
+  clip-path: polygon(
+    0 8%, 3% 0, 6% 10%, 9% 2%, 91% 2%, 94% 10%, 97% 0, 100% 8%,
+    98% 30%, 100% 52%, 97% 74%, 100% 100%, 94% 92%, 90% 100%, 10% 100%, 6% 92%, 3% 100%, 0 90%, 2% 70%, 0 48%, 3% 28%
+  );
+}
+.washi span {
+  display: block;
+  font-family: var(--hand);
+  font-weight: 700;
+  font-size: clamp(16px, 2.2vmin + 6px, 26px);
+  line-height: 1.1;
+  color: #4a3a2c;
+}
+
+/* ---------- SVG text ---------- */
+.pen-label { font: 800 10.5px var(--ui); letter-spacing: 1px; }
+.tm-num { font: 700 13px var(--ui); fill: #1d1a14; }
+.tm-num.red { fill: #c4321f; }
+.tm-brand { font: 800 15px var(--ui); fill: #fff; letter-spacing: 0.5px; }
+.tm-brand.small { font-size: 10px; font-weight: 700; opacity: 0.8; }
+.tm-bubble { font: 700 17px var(--ui); fill: #23262b; }
+.st-label { font: 700 21px var(--ui); fill: #fff; letter-spacing: 0.6px; }
+.st-emboss { font: 700 9px var(--ui); fill: #fff; opacity: 0.35; letter-spacing: 1px; }
+.st-badge { font: 800 16px var(--ui); fill: #fff; }
+.nb-title { font: 700 52px var(--hand); fill: #3e352d; }
+.nb-hand { font: 700 27px var(--hand); fill: #5b5148; }
+.nb-tab { font: 700 24px var(--hand); }
+.tag-text { font: 700 25px var(--hand); }
+.stp-head { font: 700 13px var(--ui); fill: #8f877c; letter-spacing: 2px; }
+.stp-count { font: 400 17px var(--hand-zh); fill: #8a8072; }
+.stamp-ok { font: 800 34px Georgia, 'Times New Roman', serif; }
+.imprint { transition: opacity 1.4s ease; }
+.pc-name { font-family: var(--hand); font-weight: 600; fill: #7a7368; }
+.pc-case-name { font-family: var(--hand); font-weight: 700; fill: #5e4a2e; opacity: 0.75; }
+.pc-brand { font: 800 9px var(--ui); fill: #fff; letter-spacing: 1px; }
+.kbd-only { display: none; }
+.kbd .kbd-only { display: inline; }
+/* An open dropdown floats above the other stationery and labels while it is open. */
+.placed:has(.dropdown-open) { z-index: 4; }
+.sh-pct { font: 800 11px var(--ui); fill: #2b2410; }
+.note-title { font: 700 19px Georgia, 'Times New Roman', serif; fill: #2f2a24; }
+.note-text { font: 400 8px Georgia, 'Times New Roman', serif; fill: #3d3730; }
+
+.staple-in { animation: staple-in 0.22s ease-out both; transform-box: fill-box; transform-origin: center; }
+@keyframes staple-in {
+  from { opacity: 0; transform: scale(1.6); }
+  to { opacity: 1; transform: scale(1); }
+}
